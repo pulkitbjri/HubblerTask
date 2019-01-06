@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Iterator;
 
@@ -38,10 +39,28 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewHolder> 
                 Log.i(TAG, "onBindViewHolder: "+keyValue+key+" "+value);
 
                 if (keyValue==0 )
-                    myViewHolder.name.setText(key+" : "+value);
-                if (keyValue==1 && !value.equalsIgnoreCase(""))
-                    myViewHolder.age.setText(key+": "+value);
+                {
+                    if(checkComposite(value))
+                    {
+                        myViewHolder.name.setText(key+": "+new JSONObject(value).getString("complete"));
 
+                    }
+                    else
+                        myViewHolder.name.setText(key+" : "+value);
+
+                }
+                if (keyValue==1 && !value.equalsIgnoreCase(""))
+                {
+                    if(checkComposite(value))
+                    {
+
+                        myViewHolder.age.setText(key+": "+new JSONObject(value).getString("complete"));
+
+                    }
+                    else
+                        myViewHolder.age.setText(key+": "+value);
+
+                }
                 if (!value.equalsIgnoreCase(""))
                     keyValue=keyValue+1;
 
@@ -49,6 +68,16 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewHolder> 
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean checkComposite(String value) {
+        try {
+            new JSONObject(value);
+            return true;
+        } catch (JSONException e) {
+            return false;
+        }
+
     }
 
     @Override
