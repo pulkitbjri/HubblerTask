@@ -33,6 +33,32 @@
         "field-name": "State",
         "type": "text",
         "required": true
+      },
+      {
+        "field-name": "address",
+        "type": "composite",
+        "fields": [{
+          "field-name": "Address line1",
+          "type": "text",
+          "required": true
+        },
+          {
+            "field-name": "Address line2",
+            "type": "text"
+          },
+          {
+            "field-name": "City",
+            "type": "text",
+            "required": true
+          },
+          {
+            "field-name": "State",
+            "type": "text",
+            "required": true
+          }
+
+        ],
+        "required": false
       }
 
     ],

@@ -48,7 +48,8 @@ public class AddListDataActivity extends AppCompatActivity {
 
     int pos;
 
-
+    JSONObject compositeFieldData;
+    boolean hasCompositeFieldData;
     boolean parent=true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,12 +71,18 @@ public class AddListDataActivity extends AppCompatActivity {
             parent=false;
             pos=getIntent().getIntExtra("pos",0);
 
-            Log.i("sssssss", "onCreate: "+pos);
             try {
 
                 JSONObject object=new JSONObject(getIntent().getStringExtra("data")) ;
                 setTitle(object.getString("field-name"));
                 JSONArray array=object.getJSONArray("fields");
+
+                if (getIntent().hasExtra("field_data"))
+                {
+                    Log.i("", "onCreate: "+getIntent().getStringExtra("field_data"));
+                    compositeFieldData=new JSONObject(getIntent().getStringExtra("field_data"));
+                    hasCompositeFieldData=true;
+                }
                 for (int i = 0; i < array.length(); i++) {
                     generateAndAddView(array.get(i).toString());
                 }
@@ -200,6 +207,8 @@ public class AddListDataActivity extends AppCompatActivity {
 
     private void setViewConstraints(View view, JSONObject object) throws JSONException {
 
+        Log.i("", "setViewConstraints: "+hasCompositeFieldData);
+
         LinearLayout.LayoutParams layoutParams=new
                 LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(30,50,30,10);
@@ -227,9 +236,16 @@ public class AddListDataActivity extends AppCompatActivity {
             spinner.setAdapter(adapter);
 
 
+
             layout.addView(spinner);
             viewArrayList.add(spinner);
             objectArray.add(object);
+
+            if (hasCompositeFieldData)
+            {
+                int dataPosition=spinnerList.indexOf(compositeFieldData.getString(object.getString("field-name")));
+                spinner.setSelection(dataPosition);
+            }
         }
         else if (view instanceof EditText) //field
         {
@@ -249,6 +265,11 @@ public class AddListDataActivity extends AppCompatActivity {
             layout.addView(editText);
             viewArrayList.add(editText);
             objectArray.add(object);
+
+            if (hasCompositeFieldData)
+            {
+               editText.setText(compositeFieldData.getString(object.getString("field-name")));
+            }
         }
         else if (view instanceof TextView)  //composite
         {
@@ -256,8 +277,7 @@ public class AddListDataActivity extends AppCompatActivity {
             TextView editText=(TextView) view;
             editText.setHint(object.getString("field-name"));
             editText.setTextSize(18f);
-            editText.setTextColor(Color.LTGRAY);
-
+            editText.setTextColor(Color.BLACK);
             editText.setTag(compositeArrayList.size());
             compositeArrayList.add(editText);
             layout.addView(editText);
@@ -265,18 +285,29 @@ public class AddListDataActivity extends AppCompatActivity {
             setclickListener(editText,object,compositeArrayList.size()-1);
             objectArray.add(object);
 
+            if (hasCompositeFieldData)
+            {
+                editText.setText(compositeFieldData.getString(object.getJSONObject("field-name").getString("complete")));
+            }
         }
     }
 
-    private void setclickListener(TextView textView, final JSONObject object, final int size) {
+    private void setclickListener(final TextView textView, final JSONObject object, final int position) {
 
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(AddListDataActivity.this,AddListDataActivity.class)
-                                .putExtra("data",object.toString())
-                                .putExtra("pos",size)
-                        ,compositeArrayList.size());
+                if (textView.getText().length()==0)
+                    startActivityForResult(new Intent(AddListDataActivity.this,AddListDataActivity.class)
+                                    .putExtra("data",object.toString())
+                                    .putExtra("pos",position)
+                            ,compositeArrayList.size());
+                else
+                    startActivityForResult(new Intent(AddListDataActivity.this,AddListDataActivity.class)
+                                    .putExtra("data",object.toString())
+                                    .putExtra("pos",position)
+                                    .putExtra("field_data",compositeJSONmap.get(position).toString())
+                            ,compositeArrayList.size());
             }
         });
     }
