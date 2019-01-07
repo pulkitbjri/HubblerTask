@@ -1,8 +1,12 @@
-[
+[{
+  "field-name": "name",
+  "type": "text",
+  "required": true
+},
   {
-    "field-name": "name",
-    "type": "text",
-    "required": true
+    "field-name": "Zone",
+    "type": "dropdown",
+    "options": ["A", "B", "C", "D"]
   },
   {
     "field-name": "age",
@@ -11,12 +15,11 @@
   {
     "field-name": "address",
     "type": "composite",
-    "fields": [
-      {
-        "field-name": "Address line1",
-        "type": "text",
-        "required": true
-      },
+    "fields": [{
+      "field-name": "Address line1",
+      "type": "text",
+      "required": true
+    },
       {
         "field-name": "Address line2",
         "type": "text"
@@ -26,7 +29,6 @@
         "type": "text",
         "required": true
       },
-
       {
         "field-name": "State",
         "type": "text",
@@ -35,10 +37,5 @@
 
     ],
     "required": false
-  },
-  {
-    "field-name": "Zone",
-    "type": "dropdown",
-    "options": ["A", "B", "C", "D"]
   }
 ]
