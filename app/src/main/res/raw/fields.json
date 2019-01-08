@@ -30,11 +30,6 @@
         "required": true
       },
       {
-        "field-name": "State",
-        "type": "text",
-        "required": true
-      },
-      {
         "field-name": "address",
         "type": "composite",
         "fields": [{
@@ -59,6 +54,11 @@
 
         ],
         "required": false
+      },
+      {
+        "field-name": "State",
+        "type": "text",
+        "required": true
       }
 
     ],

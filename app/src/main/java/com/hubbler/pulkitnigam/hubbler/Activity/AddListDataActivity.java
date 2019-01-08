@@ -206,9 +206,6 @@ public class AddListDataActivity extends AppCompatActivity {
     }
 
     private void setViewConstraints(View view, JSONObject object) throws JSONException {
-
-        Log.i("", "setViewConstraints: "+hasCompositeFieldData);
-
         LinearLayout.LayoutParams layoutParams=new
                 LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(30,50,30,10);
@@ -234,9 +231,6 @@ public class AddListDataActivity extends AppCompatActivity {
                     ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerList);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(adapter);
-
-
-
             layout.addView(spinner);
             viewArrayList.add(spinner);
             objectArray.add(object);
@@ -287,7 +281,17 @@ public class AddListDataActivity extends AppCompatActivity {
 
             if (hasCompositeFieldData)
             {
-                editText.setText(compositeFieldData.getString(object.getJSONObject("field-name").getString("complete")));
+                try{
+                    Log.i("", "setViewConstraints: ");
+                    JSONObject jsonObject=new JSONObject(compositeFieldData.getString(object.getString("field-name")));
+                    editText.setText(jsonObject.getString("complete"));
+                    compositeJSONmap.put(compositeArrayList.size()-1,jsonObject);
+                }
+                catch (JSONException e)
+                {
+                    e.printStackTrace();
+
+                }
             }
         }
     }
